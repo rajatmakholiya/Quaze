@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Maze Game</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="main-container">
+        <div class="quiz-panel panel">
+            <h2>Quiz Questions</h2>
+            <div id="questions-list">
+            </div>
+            <button id="submit-btn" disabled>Submit Answer</button>
+        </div>
+        <div class="maze-panel panel">
+            <canvas id="maze-canvas"></canvas>
+        </div>
+    </div>
+
+    <div id="win-modal">
+        <div class="win-modal-content panel">
+            <h2>Congratulations!</h2>
+            <p>You have successfully navigated the maze!</p>
+            <button id="play-again-btn">Play Again</button>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/game.js') }}"></script>
+</body>
+</html>
