@@ -14,7 +14,7 @@
         <div class="quiz-panel panel">
             <h2>Quiz Questions</h2>
             <div id="questions-list">
-            </div>
+                </div>
             <button id="submit-btn" disabled>Submit Answer</button>
         </div>
         <div class="maze-panel panel">
@@ -22,11 +22,19 @@
         </div>
     </div>
 
-    <div id="win-modal">
-        <div class="win-modal-content panel">
+    <div id="win-modal" class="modal">
+        <div class="modal-content panel">
             <h2>Congratulations!</h2>
             <p>You have successfully navigated the maze!</p>
             <button id="play-again-btn">Play Again</button>
+        </div>
+    </div>
+
+    <div id="game-over-modal" class="modal">
+        <div class="modal-content panel">
+            <h2>Game Over!</h2>
+            <p>You've answered all the questions but haven't reached the end of the maze.</p>
+            <button id="play-again-game-over-btn">Play Again</button>
         </div>
     </div>
 
