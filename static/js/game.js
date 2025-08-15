@@ -1,7 +1,8 @@
 document.addEventListener('DOMContentLoaded', () => {
     // --- DOM Elements ---
     const questionsListEl = document.getElementById('questions-list');
-    const submitBtn = document.getElementById('submit-btn');
+    const prevBtn = document.getElementById('prev-btn');
+    const nextBtn = document.getElementById('next-btn');
     const mazeCanvas = document.getElementById('maze-canvas');
     const mazePanel = document.querySelector('.maze-panel');
     const winModal = document.getElementById('win-modal');
@@ -14,12 +15,22 @@ document.addEventListener('DOMContentLoaded', () => {
     let currentQuestionIndex = 0;
     let questions = [];
     let maze = [];
-    let playerPos = { x: 1, y: 1 };
+    let mazePath = [];
     let TILE_SIZE = 20;
+    let questionScores = [];
+    
+    // --- Player Position & Animation State ---
+    let player = {
+        pathIndex: 0,
+        x: 0, 
+        y: 0,
+        animationFrameId: null,
+        isAnimating: false,
+        animationQueue: [] // To hold the sequence of tiles for the current move
+    };
 
     /**
-     * Initializes the game by fetching quiz and maze data,
-     * setting up the canvas, and displaying the questions.
+     * Initializes the game by fetching all necessary data.
      */
     async function initializeGame() {
         try {
@@ -29,192 +40,289 @@ document.addEventListener('DOMContentLoaded', () => {
             ]);
 
             questions = quizData;
-            maze = mazeData;
+            maze = mazeData.grid;
+            mazePath = scalePath(mazeData.path, 101); // Scale to 101 steps (0 to 100)
+            
+            questionScores = Array(questions.length).fill(0);
 
             setupCanvas();
             displayAllQuestions();
+            updatePlayerPosition(true); // `true` for instant setup
             drawGame();
 
             // --- Event Listeners ---
-            submitBtn.addEventListener('click', handleSubmit);
+            nextBtn.addEventListener('click', handleNext);
+            prevBtn.addEventListener('click', handlePrevious);
             playAgainBtn.addEventListener('click', () => window.location.reload());
             playAgainGameOverBtn.addEventListener('click', () => window.location.reload());
             window.addEventListener('resize', () => {
-                 setupCanvas();
-                 drawGame();
+                setupCanvas();
+                drawGame();
             });
         } catch (error) {
             console.error("Error initializing game:", error);
             alert("Failed to load game data. Please try refreshing the page.");
         }
     }
+    
+    function scalePath(originalPath, targetLength) {
+        if (!originalPath || originalPath.length < 2) return [];
+        const scaled = [];
+        for (let i = 0; i < targetLength; i++) {
+            const position = (i / (targetLength - 1)) * (originalPath.length - 1);
+            const point = originalPath[Math.round(position)];
+            if (point) {
+                scaled.push({ y: point[0], x: point[1] });
+            } else {
+                scaled.push({ y: 1, x: 1 });
+            }
+        }
+        return scaled;
+    }
 
-    /**
-     * Sets up the maze canvas dimensions based on the maze size and panel width.
-     */
     function setupCanvas() {
         const panelWidth = mazePanel.clientWidth;
         const panelHeight = mazePanel.clientHeight;
         const mazeDim = Math.max(maze.length, maze[0].length);
         TILE_SIZE = Math.floor(Math.min(panelWidth, panelHeight) / mazeDim);
-
         mazeCanvas.width = TILE_SIZE * maze[0].length;
-        mazeCanvas.height = TILE_SIZE * maze.length;
+        mazeCanvas.height = TILE_SIZE * maze[0].length;
+        updatePlayerPosition(true);
     }
 
-    /**
-     * Displays all the quiz questions in the questions list.
-     */
     function displayAllQuestions() {
         questionsListEl.innerHTML = '';
         questions.forEach((question, index) => {
             const item = document.createElement('div');
             item.className = 'question-item';
             item.id = `question-${index}`;
-
             const inputType = question.multiple_choice ? 'checkbox' : 'radio';
             const answersHtml = question.answers.map(answer => `
-                <div>
-                    <label>
-                        <input type="${inputType}" name="answer-${index}" value="${answer.points}">
-                        <span>${answer.text}</span>
-                    </label>
-                </div>
-            `).join('');
-
-            item.innerHTML = `
-                <h3>${index + 1}. ${question.question}</h3>
-                <div class="answers-container">${answersHtml}</div>
-            `;
+                <div><label>
+                    <input type="${inputType}" name="answer-${index}" value="${answer.points}" onchange="handleAnswerSelection(${index})">
+                    <span>${answer.text}</span>
+                </label></div>`).join('');
+            item.innerHTML = `<h3>${index + 1}. ${question.question}</h3><div class="answers-container">${answersHtml}</div>`;
             questionsListEl.appendChild(item);
         });
         updateActiveQuestion();
     }
 
-    /**
-     * Updates the currently active question in the UI.
-     */
     function updateActiveQuestion() {
         document.querySelectorAll('.question-item').forEach(item => item.classList.remove('active'));
-
         if (currentQuestionIndex < questions.length) {
-            const currentQuestionEl = document.getElementById(`question-${currentQuestionIndex}`);
-            currentQuestionEl.classList.add('active');
-            currentQuestionEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            submitBtn.disabled = false;
+            const el = document.getElementById(`question-${currentQuestionIndex}`);
+            el.classList.add('active');
+            el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+        updateButtonStates();
+    }
+
+    window.handleAnswerSelection = (questionIndex) => {
+        const questionEl = document.getElementById(`question-${questionIndex}`);
+        const selectedInputs = questionEl.querySelectorAll('input:checked');
+        let currentPoints = 0;
+        selectedInputs.forEach(input => {
+            currentPoints += parseInt(input.value);
+        });
+        questionScores[questionIndex] = currentPoints;
+        updatePlayerPosition();
+        updateNextButtonState();
+    };
+
+    /**
+     * Calculates the path difference and initiates the animation.
+     */
+    function updatePlayerPosition(instant = false) {
+        const totalScore = questionScores.reduce((sum, score) => sum + score, 0);
+        const newPathIndex = Math.max(0, Math.min(totalScore, mazePath.length - 1));
+
+        if (player.pathIndex === newPathIndex && !instant) return;
+
+        const targetNode = mazePath[newPathIndex];
+        if (!targetNode) return;
+        
+        // Build the path for the animation
+        const pathSlice = mazePath.slice(
+            Math.min(player.pathIndex, newPathIndex),
+            Math.max(player.pathIndex, newPathIndex) + 1
+        );
+
+        // If moving backward, reverse the path slice
+        if (newPathIndex < player.pathIndex) {
+            pathSlice.reverse();
+        }
+
+        player.pathIndex = newPathIndex;
+
+        if (instant) {
+            player.x = targetNode.x * TILE_SIZE;
+            player.y = targetNode.y * TILE_SIZE;
+            drawGame();
         } else {
-            submitBtn.disabled = true;
-            submitBtn.textContent = "Quiz Complete!";
-            // If the quiz is complete, check if the player has won or lost.
+            // Start the new animation
+            player.animationQueue = pathSlice;
+            if (!player.isAnimating) {
+                animateMove();
+            }
+        }
+    }
+
+    /**
+     * Animates the player tile-by-tile using the animationQueue.
+     */
+    function animateMove() {
+        if (player.animationFrameId) {
+            cancelAnimationFrame(player.animationFrameId);
+        }
+
+        // Get the next tile from the queue
+        const nextNode = player.animationQueue.shift();
+        if (!nextNode) {
+            player.isAnimating = false;
+            checkWinCondition(); // Check win only when all movement is complete
+            return;
+        }
+
+        const target = {
+            x: nextNode.x * TILE_SIZE,
+            y: nextNode.y * TILE_SIZE
+        };
+
+        const speed = 0.15; // Animation speed
+
+        function animationStep() {
+            const dx = target.x - player.x;
+            const dy = target.y - player.y;
+
+            if (Math.abs(dx) < 0.5 && Math.abs(dy) < 0.5) {
+                player.x = target.x;
+                player.y = target.y;
+                // Start animation for the next tile in the queue
+                animateMove();
+                return;
+            }
+
+            player.x += dx * speed;
+            player.y += dy * speed;
+
+            drawGame();
+            player.animationFrameId = requestAnimationFrame(animationStep);
+        }
+        
+        player.isAnimating = true;
+        animationStep();
+    }
+    
+    function updateNextButtonState() {
+        const activeQuestionEl = document.getElementById(`question-${currentQuestionIndex}`);
+        if (!activeQuestionEl) return;
+        nextBtn.disabled = activeQuestionEl.querySelectorAll('input:checked').length === 0;
+    }
+
+    function updateButtonStates() {
+        prevBtn.style.visibility = currentQuestionIndex > 0 ? 'visible' : 'hidden';
+        nextBtn.textContent = (currentQuestionIndex === questions.length - 1) ? 'Submit' : 'Next';
+        updateNextButtonState();
+    }
+
+    function drawGame() {
+        drawMaze();
+        drawPlayer();
+    }
+    
+    function drawMaze() {
+        ctx.clearRect(0, 0, mazeCanvas.width, mazeCanvas.height);
+        const wallBaseColor = '#3b4b5c';
+        const wallHighlightColor = '#4a5b6b';
+        const wallShadowColor = '#2f3e4d';
+
+        for (let y = 0; y < maze.length; y++) {
+            for (let x = 0; x < maze[y].length; x++) {
+                if (maze[y][x] === 1) {
+                    const xPos = x * TILE_SIZE;
+                    const yPos = y * TILE_SIZE;
+                    const bevelSize = TILE_SIZE / 8;
+                    ctx.fillStyle = wallBaseColor;
+                    ctx.fillRect(xPos, yPos, TILE_SIZE, TILE_SIZE);
+                    ctx.fillStyle = wallHighlightColor;
+                    ctx.beginPath();
+                    ctx.moveTo(xPos, yPos);
+                    ctx.lineTo(xPos + TILE_SIZE, yPos);
+                    ctx.lineTo(xPos + TILE_SIZE - bevelSize, yPos + bevelSize);
+                    ctx.lineTo(xPos + bevelSize, yPos + bevelSize);
+                    ctx.closePath();
+                    ctx.fill();
+                    ctx.beginPath();
+                    ctx.moveTo(xPos, yPos);
+                    ctx.lineTo(xPos, yPos + TILE_SIZE);
+                    ctx.lineTo(xPos + bevelSize, yPos + TILE_SIZE - bevelSize);
+                    ctx.lineTo(xPos + bevelSize, yPos + bevelSize);
+                    ctx.closePath();
+                    ctx.fill();
+                    ctx.fillStyle = wallShadowColor;
+                    ctx.beginPath();
+                    ctx.moveTo(xPos, yPos + TILE_SIZE);
+                    ctx.lineTo(xPos + TILE_SIZE, yPos + TILE_SIZE);
+                    ctx.lineTo(xPos + TILE_SIZE - bevelSize, yPos + TILE_SIZE - bevelSize);
+                    ctx.lineTo(xPos + bevelSize, yPos + TILE_SIZE - bevelSize);
+                    ctx.closePath();
+                    ctx.fill();
+                    ctx.beginPath();
+                    ctx.moveTo(xPos + TILE_SIZE, yPos);
+                    ctx.lineTo(xPos + TILE_SIZE, yPos + TILE_SIZE);
+                    ctx.lineTo(xPos + TILE_SIZE - bevelSize, yPos + TILE_SIZE - bevelSize);
+                    ctx.lineTo(xPos + TILE_SIZE - bevelSize, yPos + bevelSize);
+                    ctx.closePath();
+                    ctx.fill();
+                }
+            }
+        }
+        const startPos = { x: 1, y: 1 };
+        const endPos = { x: maze[0].length - 2, y: maze.length - 2 };
+        ctx.fillStyle = 'rgba(46, 204, 113, 0.7)';
+        ctx.fillRect(startPos.x * TILE_SIZE, startPos.y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
+        ctx.fillStyle = 'rgba(231, 76, 60, 0.7)';
+        ctx.fillRect(endPos.x * TILE_SIZE, endPos.y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
+    }
+
+    function drawPlayer() {
+        ctx.fillStyle = 'var(--player-color)';
+        ctx.beginPath();
+        ctx.arc(
+            player.x + TILE_SIZE / 2, 
+            player.y + TILE_SIZE / 2, 
+            TILE_SIZE / 2.8, 0, 2 * Math.PI
+        );
+        ctx.fill();
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.9)';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+    }
+
+    function handleNext() {
+        if (currentQuestionIndex < questions.length - 1) {
+            currentQuestionIndex++;
+            updateActiveQuestion();
+        } else {
             if (!checkWinCondition()) {
                 gameOverModal.classList.add('show');
             }
         }
     }
 
-    /**
-     * Draws the maze and the player.
-     */
-    function drawGame() {
-        drawMaze();
-        drawPlayer();
-    }
-
-    /**
-     * Draws the maze on the canvas.
-     */
-    function drawMaze() {
-        ctx.clearRect(0, 0, mazeCanvas.width, mazeCanvas.height);
-
-        ctx.fillStyle = '#333';
-        for (let y = 0; y < maze.length; y++) {
-            for (let x = 0; x < maze[y].length; x++) {
-                if (maze[y][x] === 1) {
-                    ctx.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
-                }
-            }
+    function handlePrevious() {
+        if (currentQuestionIndex > 0) {
+            currentQuestionIndex--;
+            updateActiveQuestion();
         }
-
-        // --- Start and End Points ---
-        const startPos = { x: 1, y: 1 };
-        const endPos = { x: maze[0].length - 2, y: maze.length - 2 };
-
-        ctx.fillStyle = 'rgba(0, 255, 127, 0.5)';
-        ctx.fillRect(startPos.x * TILE_SIZE, startPos.y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
-
-        ctx.fillStyle = 'rgba(255, 69, 0, 0.6)';
-        ctx.fillRect(endPos.x * TILE_SIZE, endPos.y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
     }
 
-    /**
-     * Draws the player on the canvas.
-     */
-    function drawPlayer() {
-        ctx.fillStyle = 'var(--primary-color)';
-        ctx.beginPath();
-        ctx.arc(
-            playerPos.x * TILE_SIZE + TILE_SIZE / 2,
-            playerPos.y * TILE_SIZE + TILE_SIZE / 2,
-            TILE_SIZE / 3,
-            0, 2 * Math.PI
-        );
-        ctx.fill();
-        ctx.strokeStyle = 'rgba(255, 255, 255, 0.8)';
-        ctx.lineWidth = 2;
-        ctx.stroke();
-    }
-
-    /**
-     * Handles the submission of an answer.
-     */
-    function handleSubmit() {
-        const activeQuestionEl = document.getElementById(`question-${currentQuestionIndex}`);
-        const selectedAnswers = activeQuestionEl.querySelectorAll('input:checked');
-
-        if (selectedAnswers.length === 0) return;
-
-        let totalPoints = 0;
-        selectedAnswers.forEach(input => {
-            totalPoints += parseInt(input.value);
-        });
-
-        movePlayer(totalPoints);
-
-        currentQuestionIndex++;
-        updateActiveQuestion();
-    }
-
-    /**
-     * Moves the player a certain number of steps through the maze.
-     * @param {number} steps - The number of steps to move the player.
-     */
-    function movePlayer(steps) {
-        for (let i = 0; i < steps; i++) {
-            const possibleMoves = [];
-            if (playerPos.y > 0 && maze[playerPos.y - 1][playerPos.x] === 0) possibleMoves.push({ x: 0, y: -1 });
-            if (playerPos.y < maze.length - 1 && maze[playerPos.y + 1][playerPos.x] === 0) possibleMoves.push({ x: 0, y: 1 });
-            if (playerPos.x > 0 && maze[playerPos.y][playerPos.x - 1] === 0) possibleMoves.push({ x: -1, y: 0 });
-            if (playerPos.x < maze[0].length - 1 && maze[playerPos.y][playerPos.x + 1] === 0) possibleMoves.push({ x: 1, y: 0 });
-
-            if (possibleMoves.length > 0) {
-                const move = possibleMoves[Math.floor(Math.random() * possibleMoves.length)];
-                playerPos.x += move.x;
-                playerPos.y += move.y;
-            }
-        }
-
-        drawGame();
-        checkWinCondition();
-    }
-
-    /**
-     * Checks if the player has reached the end of the maze.
-     * @returns {boolean} - True if the player has won, false otherwise.
-     */
     function checkWinCondition() {
-        const endX = maze[0].length - 2;
-        const endY = maze.length - 2;
-        if (playerPos.x === endX && playerPos.y === endY) {
+        if (player.isAnimating) return false;
+        
+        const totalScore = questionScores.reduce((sum, score) => sum + score, 0);
+        if (totalScore >= 100) {
             winModal.classList.add('show');
             return true;
         }
