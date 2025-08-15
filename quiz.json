@@ -4,7 +4,7 @@
     "answers": [
       { "text": "Berlin", "points": 0 },
       { "text": "Madrid", "points": 0 },
-      { "text": "Paris", "points": 2 },
+      { "text": "Paris", "points": 8 },
       { "text": "Rome", "points": 0 }
     ],
     "multiple_choice": false
@@ -12,10 +12,10 @@
   {
     "question": "Which of the following are primary colors?",
     "answers": [
-      { "text": "Red", "points": 1 },
-      { "text": "Green", "points": 0 },
-      { "text": "Blue", "points": 1 },
-      { "text": "Yellow", "points": 1 }
+      { "text": "Red", "points": 3 },
+      { "text": "Green", "points": 3 },
+      { "text": "Blue", "points": 3 },
+      { "text": "Yellow", "points": 0 }
     ],
     "multiple_choice": true
   },
@@ -23,7 +23,7 @@
     "question": "What is 2 + 2?",
     "answers": [
       { "text": "3", "points": 0 },
-      { "text": "4", "points": 3 },
+      { "text": "4", "points": 9 },
       { "text": "5", "points": 0 },
       { "text": "6", "points": 0 }
     ],
@@ -33,7 +33,7 @@
     "question": "What is the capital of Germany?",
     "answers": [
       { "text": "Vienna", "points": 0 },
-      { "text": "Berlin", "points": 2 },
+      { "text": "Berlin", "points": 8 },
       { "text": "Frankfurt", "points": 0 },
       { "text": "Munich", "points": 0 }
     ],
@@ -42,10 +42,10 @@
   {
     "question": "Which of these are planets in our solar system?",
     "answers": [
-      { "text": "Mars", "points": 1 },
-      { "text": "Jupiter", "points": 1 },
+      { "text": "Mars", "points": 3 },
+      { "text": "Jupiter", "points": 3 },
       { "text": "Polaris", "points": 0 },
-      { "text": "Venus", "points": 1 }
+      { "text": "Venus", "points": 3 }
     ],
     "multiple_choice": true
   },
@@ -53,7 +53,7 @@
     "question": "What is the boiling point of water at sea level in Celsius?",
     "answers": [
       { "text": "90", "points": 0 },
-      { "text": "100", "points": 2 },
+      { "text": "100", "points": 8 },
       { "text": "120", "points": 0 },
       { "text": "80", "points": 0 }
     ],
@@ -62,9 +62,9 @@
   {
     "question": "Select the vertebrate animals.",
     "answers": [
-      { "text": "Frog", "points": 1 },
+      { "text": "Frog", "points": 4 },
       { "text": "Ant", "points": 0 },
-      { "text": "Dog", "points": 1 },
+      { "text": "Dog", "points": 4 },
       { "text": "Spider", "points": 0 }
     ],
     "multiple_choice": true
@@ -72,7 +72,7 @@
   {
     "question": "Who wrote 'Romeo and Juliet'?",
     "answers": [
-      { "text": "William Shakespeare", "points": 3 },
+      { "text": "William Shakespeare", "points": 9 },
       { "text": "Jane Austen", "points": 0 },
       { "text": "Charles Dickens", "points": 0 },
       { "text": "Leo Tolstoy", "points": 0 }
@@ -82,9 +82,9 @@
   {
     "question": "Which of these are programming languages?",
     "answers": [
-      { "text": "Python", "points": 1 },
-      { "text": "Java", "points": 1 },
-      { "text": "HTML", "points": 1 },
+      { "text": "Python", "points": 3 },
+      { "text": "Java", "points": 3 },
+      { "text": "HTML", "points": 3 },
       { "text": "Photoshop", "points": 0 }
     ],
     "multiple_choice": true
@@ -92,7 +92,7 @@
   {
     "question": "What color do you get when you mix red and white?",
     "answers": [
-      { "text": "Pink", "points": 2 },
+      { "text": "Pink", "points": 8 },
       { "text": "Purple", "points": 0 },
       { "text": "Orange", "points": 0 },
       { "text": "Brown", "points": 0 }
@@ -102,9 +102,9 @@
   {
     "question": "Select mammals from the list.",
     "answers": [
-      { "text": "Dolphin", "points": 1 },
+      { "text": "Dolphin", "points": 4 },
       { "text": "Shark", "points": 0 },
-      { "text": "Bat", "points": 1 },
+      { "text": "Bat", "points": 4 },
       { "text": "Penguin", "points": 0 }
     ],
     "multiple_choice": true
@@ -113,389 +113,9 @@
     "question": "What is the largest continent?",
     "answers": [
       { "text": "Africa", "points": 0 },
-      { "text": "Asia", "points": 2 },
+      { "text": "Asia", "points": 9 },
       { "text": "Europe", "points": 0 },
       { "text": "Antarctica", "points": 0 }
-    ],
-    "multiple_choice": false
-  },
-  {
-    "question": "Which of these are famous artists?",
-    "answers": [
-      { "text": "Leonardo da Vinci", "points": 1 },
-      { "text": "Vincent Van Gogh", "points": 1 },
-      { "text": "Isaac Newton", "points": 0 },
-      { "text": "Thomas Edison", "points": 0 }
-    ],
-    "multiple_choice": true
-  },
-  {
-    "question": "Which planet is known as the Red Planet?",
-    "answers": [
-      { "text": "Earth", "points": 0 },
-      { "text": "Venus", "points": 0 },
-      { "text": "Mars", "points": 2 },
-      { "text": "Jupiter", "points": 0 }
-    ],
-    "multiple_choice": false
-  },
-  {
-    "question": "Select the Nobel Prize categories.",
-    "answers": [
-      { "text": "Peace", "points": 1 },
-      { "text": "Literature", "points": 1 },
-      { "text": "Architecture", "points": 0 },
-      { "text": "Physics", "points": 1 }
-    ],
-    "multiple_choice": true
-  },
-  {
-    "question": "What is the fastest land animal?",
-    "answers": [
-      { "text": "Cheetah", "points": 2 },
-      { "text": "Lion", "points": 0 },
-      { "text": "Leopard", "points": 0 },
-      { "text": "Gazelle", "points": 0 }
-    ],
-    "multiple_choice": false
-  },
-  {
-    "question": "Which of these countries are in Africa?",
-    "answers": [
-      { "text": "Nigeria", "points": 1 },
-      { "text": "Kenya", "points": 1 },
-      { "text": "Peru", "points": 0 },
-      { "text": "Egypt", "points": 1 }
-    ],
-    "multiple_choice": true
-  },
-  {
-    "question": "What is H2O commonly known as?",
-    "answers": [
-      { "text": "Ammonia", "points": 0 },
-      { "text": "Oxygen", "points": 0 },
-      { "text": "Water", "points": 3 },
-      { "text": "Hydrogen", "points": 0 }
-    ],
-    "multiple_choice": false
-  },
-  {
-    "question": "Select the prime numbers.",
-    "answers": [
-      { "text": "2", "points": 1 },
-      { "text": "3", "points": 1 },
-      { "text": "4", "points": 0 },
-      { "text": "5", "points": 1 }
-    ],
-    "multiple_choice": true
-  },
-  {
-    "question": "How many continents are there?",
-    "answers": [
-      { "text": "5", "points": 0 },
-      { "text": "6", "points": 0 },
-      { "text": "7", "points": 2 },
-      { "text": "8", "points": 0 }
-    ],
-    "multiple_choice": false
-  },
-  {
-    "question": "Which of these are fruits?",
-    "answers": [
-      { "text": "Apple", "points": 1 },
-      { "text": "Potato", "points": 0 },
-      { "text": "Banana", "points": 1 },
-      { "text": "Carrot", "points": 0 }
-    ],
-    "multiple_choice": true
-  },
-  {
-    "question": "What is the largest mammal?",
-    "answers": [
-      { "text": "Elephant", "points": 0 },
-      { "text": "Blue Whale", "points": 2 },
-      { "text": "Giraffe", "points": 0 },
-      { "text": "Hippopotamus", "points": 0 }
-    ],
-    "multiple_choice": false
-  },
-  {
-    "question": "Select all the vowel letters.",
-    "answers": [
-      { "text": "A", "points": 1 },
-      { "text": "E", "points": 1 },
-      { "text": "I", "points": 1 },
-      { "text": "B", "points": 0 }
-    ],
-    "multiple_choice": true
-  },
-  {
-    "question": "Who painted the Mona Lisa?",
-    "answers": [
-      { "text": "Pablo Picasso", "points": 0 },
-      { "text": "Leonardo da Vinci", "points": 3 },
-      { "text": "Claude Monet", "points": 0 },
-      { "text": "Rembrandt", "points": 0 }
-    ],
-    "multiple_choice": false
-  },
-  {
-    "question": "Which are elements on the periodic table?",
-    "answers": [
-      { "text": "Gold", "points": 1 },
-      { "text": "Silver", "points": 1 },
-      { "text": "Brass", "points": 0 },
-      { "text": "Steel", "points": 0 }
-    ],
-    "multiple_choice": true
-  },
-  {
-    "question": "How many legs does a spider have?",
-    "answers": [
-      { "text": "6", "points": 0 },
-      { "text": "8", "points": 2 },
-      { "text": "10", "points": 0 },
-      { "text": "12", "points": 0 }
-    ],
-    "multiple_choice": false
-  },
-  {
-    "question": "Which of these instruments are strings?",
-    "answers": [
-      { "text": "Guitar", "points": 1 },
-      { "text": "Piano", "points": 1 },
-      { "text": "Trumpet", "points": 0 },
-      { "text": "Violin", "points": 1 }
-    ],
-    "multiple_choice": true
-  },
-  {
-    "question": "Which animal is known as the King of the Jungle?",
-    "answers": [
-      { "text": "Tiger", "points": 0 },
-      { "text": "Lion", "points": 2 },
-      { "text": "Elephant", "points": 0 },
-      { "text": "Wolf", "points": 0 }
-    ],
-    "multiple_choice": false
-  },
-  {
-    "question": "Select the U.S. presidents from the list.",
-    "answers": [
-      { "text": "George Washington", "points": 1 },
-      { "text": "Abraham Lincoln", "points": 1 },
-      { "text": "Winston Churchill", "points": 0 },
-      { "text": "Nelson Mandela", "points": 0 }
-    ],
-    "multiple_choice": true
-  },
-  {
-    "question": "What gas do plants absorb from the atmosphere?",
-    "answers": [
-      { "text": "Oxygen", "points": 0 },
-      { "text": "Hydrogen", "points": 0 },
-      { "text": "Carbon Dioxide", "points": 2 },
-      { "text": "Nitrogen", "points": 0 }
-    ],
-    "multiple_choice": false
-  },
-  {
-    "question": "Which of these are renewable energy sources?",
-    "answers": [
-      { "text": "Solar", "points": 1 },
-      { "text": "Wind", "points": 1 },
-      { "text": "Coal", "points": 0 },
-      { "text": "Hydro", "points": 1 }
-    ],
-    "multiple_choice": true
-  },
-  {
-    "question": "Which country gifted the Statue of Liberty to the USA?",
-    "answers": [
-      { "text": "France", "points": 2 },
-      { "text": "England", "points": 0 },
-      { "text": "Spain", "points": 0 },
-      { "text": "Germany", "points": 0 }
-    ],
-    "multiple_choice": false
-  },
-  {
-    "question": "Select the programming paradigms.",
-    "answers": [
-      { "text": "Object-Oriented", "points": 1 },
-      { "text": "Functional", "points": 1 },
-      { "text": "Procedural", "points": 1 },
-      { "text": "Symbolic", "points": 0 }
-    ],
-    "multiple_choice": true
-  },
-  {
-    "question": "Which is the largest ocean on Earth?",
-    "answers": [
-      { "text": "Atlantic", "points": 0 },
-      { "text": "Pacific", "points": 2 },
-      { "text": "Indian", "points": 0 },
-      { "text": "Arctic", "points": 0 }
-    ],
-    "multiple_choice": false
-  },
-  {
-    "question": "Which of the following are polygons?",
-    "answers": [
-      { "text": "Square", "points": 1 },
-      { "text": "Triangle", "points": 1 },
-      { "text": "Circle", "points": 0 },
-      { "text": "Rectangle", "points": 1 }
-    ],
-    "multiple_choice": true
-  },
-  {
-    "question": "Who is known as the father of computers?",
-    "answers": [
-      { "text": "Charles Babbage", "points": 2 },
-      { "text": "Alan Turing", "points": 0 },
-      { "text": "Bill Gates", "points": 0 },
-      { "text": "Steve Jobs", "points": 0 }
-    ],
-    "multiple_choice": false
-  },
-  {
-    "question": "Select the prime ministers of India.",
-    "answers": [
-      { "text": "Narendra Modi", "points": 1 },
-      { "text": "Indira Gandhi", "points": 1 },
-      { "text": "Nelson Mandela", "points": 0 },
-      { "text": "Angela Merkel", "points": 0 }
-    ],
-    "multiple_choice": true
-  },
-  {
-    "question": "What is the chemical symbol for gold?",
-    "answers": [
-      { "text": "Gd", "points": 0 },
-      { "text": "Go", "points": 0 },
-      { "text": "Au", "points": 2 },
-      { "text": "Ag", "points": 0 }
-    ],
-    "multiple_choice": false
-  },
-  {
-    "question": "Which are web browsers?",
-    "answers": [
-      { "text": "Chrome", "points": 1 },
-      { "text": "Firefox", "points": 1 },
-      { "text": "Word", "points": 0 },
-      { "text": "Safari", "points": 1 }
-    ],
-    "multiple_choice": true
-  },
-  {
-    "question": "Who was the first person on the moon?",
-    "answers": [
-      { "text": "Buzz Aldrin", "points": 0 },
-      { "text": "Yuri Gagarin", "points": 0 },
-      { "text": "Neil Armstrong", "points": 3 },
-      { "text": "Michael Collins", "points": 0 }
-    ],
-    "multiple_choice": false
-  },
-  {
-    "question": "Which of these are programming frameworks?",
-    "answers": [
-      { "text": "React", "points": 1 },
-      { "text": "Angular", "points": 1 },
-      { "text": "JavaScript", "points": 0 },
-      { "text": "Django", "points": 1 }
-    ],
-    "multiple_choice": true
-  },
-  {
-    "question": "What is the square root of 16?",
-    "answers": [
-      { "text": "2", "points": 0 },
-      { "text": "4", "points": 2 },
-      { "text": "8", "points": 0 },
-      { "text": "16", "points": 0 }
-    ],
-    "multiple_choice": false
-  },
-  {
-    "question": "Select the animals that can fly.",
-    "answers": [
-      { "text": "Penguin", "points": 0 },
-      { "text": "Sparrow", "points": 1 },
-      { "text": "Butterfly", "points": 1 },
-      { "text": "Bat", "points": 1 }
-    ],
-    "multiple_choice": true
-  },
-  {
-    "question": "Who developed the theory of relativity?",
-    "answers": [
-      { "text": "Isaac Newton", "points": 0 },
-      { "text": "Albert Einstein", "points": 2 },
-      { "text": "Niels Bohr", "points": 0 },
-      { "text": "Marie Curie", "points": 0 }
-    ],
-    "multiple_choice": false
-  },
-  {
-    "question": "Which of these are vegetables?",
-    "answers": [
-      { "text": "Carrot", "points": 1 },
-      { "text": "Broccoli", "points": 1 },
-      { "text": "Apple", "points": 0 },
-      { "text": "Potato", "points": 1 }
-    ],
-    "multiple_choice": true
-  },
-  {
-    "question": "What is the tallest mountain in the world?",
-    "answers": [
-      { "text": "Mount Everest", "points": 2 },
-      { "text": "K2", "points": 0 },
-      { "text": "Kangchenjunga", "points": 0 },
-      { "text": "Lhotse", "points": 0 }
-    ],
-    "multiple_choice": false
-  },
-  {
-    "question": "Select the forms of precipitation.",
-    "answers": [
-      { "text": "Rain", "points": 1 },
-      { "text": "Snow", "points": 1 },
-      { "text": "Cloud", "points": 0 },
-      { "text": "Hail", "points": 1 }
-    ],
-    "multiple_choice": true
-  },
-  {
-    "question": "Which country has the largest population?",
-    "answers": [
-      { "text": "USA", "points": 0 },
-      { "text": "China", "points": 2 },
-      { "text": "India", "points": 0 },
-      { "text": "Indonesia", "points": 0 }
-    ],
-    "multiple_choice": false
-  },
-  {
-    "question": "Which of these are birds?",
-    "answers": [
-      { "text": "Eagle", "points": 1 },
-      { "text": "Ostrich", "points": 1 },
-      { "text": "Frog", "points": 0 },
-      { "text": "Penguin", "points": 1 }
-    ],
-    "multiple_choice": true
-  },
-  {
-    "question": "What is 15 divided by 3?",
-    "answers": [
-      { "text": "3", "points": 0 },
-      { "text": "4", "points": 0 },
-      { "text": "5", "points": 2 },
-      { "text": "6", "points": 0 }
     ],
     "multiple_choice": false
   }
