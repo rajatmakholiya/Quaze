@@ -18,6 +18,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let mazePath = [];
     let TILE_SIZE = 20;
     let questionScores = [];
+    let maxScore = 0;
     
     // --- Player Position & Animation State ---
     let player = {
@@ -40,8 +41,18 @@ document.addEventListener('DOMContentLoaded', () => {
             ]);
 
             questions = quizData;
+
+            // Calculate the maximum possible score
+            maxScore = questions.reduce((total, question) => {
+                if (question.multiple_choice) {
+                    return total + question.answers.reduce((sum, answer) => sum + Math.max(0, answer.points), 0);
+                } else {
+                    return total + Math.max(...question.answers.map(a => a.points));
+                }
+            }, 0);
+
             maze = mazeData.grid;
-            mazePath = scalePath(mazeData.path, 101); // Scale to 101 steps (0 to 100)
+            mazePath = scalePath(mazeData.path, maxScore + 1); // Scale path to the max score
             
             questionScores = Array(questions.length).fill(0);
 
@@ -271,7 +282,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     ctx.beginPath();
                     ctx.moveTo(xPos + TILE_SIZE, yPos);
                     ctx.lineTo(xPos + TILE_SIZE, yPos + TILE_SIZE);
-                    ctx.lineTo(xPos + TILE_SIZE - bevelSize, yPos + TILE_SIZE - bevelSize);
+                    ctx.lineTo(xPos + TILE_SIZE - bevelSize, yPos + TILE_SIZE - bevelSize); // <-- FIX IS HERE
                     ctx.lineTo(xPos + TILE_SIZE - bevelSize, yPos + bevelSize);
                     ctx.closePath();
                     ctx.fill();
@@ -322,7 +333,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (player.isAnimating) return false;
         
         const totalScore = questionScores.reduce((sum, score) => sum + score, 0);
-        if (totalScore >= 100) {
+        if (totalScore >= maxScore) {
             winModal.classList.add('show');
             return true;
         }
